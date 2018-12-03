@@ -1,0 +1,3 @@
+<lib-board *ngFor="let t of templates" [name]="t.name">
+  <lib-renderer [template]="t.contents" (complete)="onCompilationComplete(t)"></lib-renderer>
+</lib-board>

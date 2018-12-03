@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+header {
+  display: block;
+  height: 16px;
+  font: 12px Roboto;
+  color: #666;
+  box-sizing: border-box;
+  padding-bottom: 4px;
+  padding-left: 2px;
+}
+
+.contents {
+  height: calc(100% - 16px);
+  width: 100%;
+  background: white;
+  resize: vertical;
+  overflow: auto;
+  box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.25);
+}

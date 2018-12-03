@@ -1,0 +1,80 @@
+<div class="editor">
+  <header>
+    <span class="header-title">Templates</span> <span class="spacer"></span>
+
+    <mat-form-field>
+      <mat-select [(value)]="selectedThreadOption" (valueChange)="onThreadOptionChange()">
+        <mat-option value="single">Single compiler thread</mat-option>
+        <mat-option value="multiple">Compiler thread per template</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      (click)="compileTemplates()"
+      [disabled]="!compilerReady"
+      color="primary"
+    >
+      Compile
+    </button>
+  </header>
+  <div class="editor-contents">
+    <div class="top">
+      <div class="files-list">
+        <ul>
+          <li
+            *ngFor="let t of templates"
+            (click)="openTemplate(t)"
+            [innerText]="t.name"
+            [class.selected]="t.selected"
+          ></li>
+        </ul>
+        <button class="add-template-button" color="primary" mat-button (click)="addTemplate()">
+          Add template
+        </button>
+      </div>
+      <ngx-monaco-editor
+        [options]="editorOptions"
+        [(ngModel)]="selectedTemplate.contents"
+        (ngModelChange)="updateTemplate($event)"
+      ></ngx-monaco-editor>
+    </div>
+    <div class="bottom">
+      <header>
+        Logging
+        <div class="spacer"></div>
+        <button class="clear-logs-btn" (click)="clearLogs()">Clear log messages</button>
+      </header>
+      <div class="log-scrolling-conainter" id="logScroller">
+        <ul class="log-message-list">
+          <li class="log-message" *ngFor="let message of logMessages" [innerText]="message"></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="results">
+  <header><span>Results</span></header>
+  <div class="results-contents">
+    <div class="compile-instruction-message" *ngIf="!compileClicked">
+      Click compile to view results
+    </div>
+    <app-bulk-compiler-wrapper
+      #bulkCompiler
+      *ngIf="selectedThreadOption === 'single'"
+      [templates]="templates"
+      (ready)="onBulkCompilerReady($event)"
+      (complete)="onBulkCompilerComplete()"
+    ></app-bulk-compiler-wrapper>
+
+    <div class="multi-contents" *ngIf="selectedThreadOption === 'multiple'">
+      <lib-board *ngFor="let t of templates; let i = index" [name]="t.name">
+        <app-compiler-wrapper
+          [template]="t"
+          [templateNumber]="i"
+          (ready)="onCompilerReady($event, t)"
+          (complete)="onCompilerComplete(t)"
+        ></app-compiler-wrapper>
+      </lib-board>
+    </div>
+  </div>
+</div>
